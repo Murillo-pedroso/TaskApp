@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import { List, Input, Button, Col, Row } from "antd";
 
@@ -10,24 +10,34 @@ interface Task {
 }
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskText, setNewTaskText] = useState("");
 
+  const initialTasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
   const addTask = () => {
-    setTasks([...tasks, { id: Date.now(), text: newTaskText, done: false }]);
+    const newTasks = [
+      ...tasks,
+      { id: Date.now(), text: newTaskText, done: false },
+    ];
+    setTasks(newTasks);
     setNewTaskText("");
   };
 
   const toggleTaskDone = (id: number) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, done: !task.done } : task
-      )
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, done: !task.done } : task
     );
+    setTasks(updatedTasks);
   };
 
   const deleteTask = (id: number) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+    const updatedTasks = tasks.filter((task) => task.id !== id);
+    setTasks(updatedTasks);
   };
 
   return (
