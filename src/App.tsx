@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
-import { List, Input, Button, Col, Row } from "antd";
+import { List, Input, Button, Col, Row, message } from "antd";
 
 interface Task {
   id: number;
@@ -20,6 +20,10 @@ function App() {
   }, [tasks]);
 
   const addTask = () => {
+    if (newTaskText.trim() === "") {
+      message.error("A tarefa não pode ser vazia.");
+      return;
+    }
     const newTasks = [
       ...tasks,
       { id: Date.now(), text: newTaskText, done: false },
