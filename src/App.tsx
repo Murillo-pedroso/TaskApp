@@ -30,6 +30,7 @@ function App() {
     ];
     setTasks(newTasks);
     setNewTaskText("");
+    message.success("Tarefa adicionada com sucesso!");
   };
 
   const toggleTaskDone = (id: number) => {
@@ -42,6 +43,7 @@ function App() {
   const deleteTask = (id: number) => {
     const updatedTasks = tasks.filter((task) => task.id !== id);
     setTasks(updatedTasks);
+    message.success("Tarefa removida com sucesso!");
   };
 
   return (
