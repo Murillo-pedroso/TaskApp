@@ -1,8 +1,8 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
+// App.tsx
 import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
 import { List, Input, Button, Col, Row, message } from "antd";
 import { AppContainer, StyledRow, TaskTitle } from "./style";
+
 interface Task {
   id: number;
   text: string;
@@ -11,36 +11,40 @@ interface Task {
 
 function App() {
   const [newTaskText, setNewTaskText] = useState("");
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  const initialTasks = JSON.parse(localStorage.getItem("tasks") || "[]");
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  useEffect(() => {
+    const initialTasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+    setTasks(initialTasks);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  const addTask = () => {
+  const handleAddTask = () => {
     if (newTaskText.trim() === "") {
       message.error("A tarefa não pode ser vazia.");
       return;
     }
-    const newTasks = [
-      ...tasks,
-      { id: Date.now(), text: newTaskText, done: false },
-    ];
-    setTasks(newTasks);
+    const newTask: Task = {
+      id: Date.now(),
+      text: newTaskText,
+      done: false,
+    };
+    setTasks([...tasks, newTask]);
     setNewTaskText("");
     message.success("Tarefa adicionada com sucesso!");
   };
 
-  const toggleTaskDone = (id: number) => {
+  const handleToggleTaskDone = (id: number) => {
     const updatedTasks = tasks.map((task) =>
       task.id === id ? { ...task, done: !task.done } : task
     );
     setTasks(updatedTasks);
   };
 
-  const deleteTask = (id: number) => {
+  const handleDeleteTask = (id: number) => {
     const updatedTasks = tasks.filter((task) => task.id !== id);
     setTasks(updatedTasks);
     message.success("Tarefa removida com sucesso!");
@@ -56,11 +60,11 @@ function App() {
                 value={newTaskText}
                 onChange={(e) => setNewTaskText(e.target.value)}
                 placeholder="Nova Tarefa"
-                onPressEnter={addTask}
+                onPressEnter={handleAddTask}
               />
             </Col>
             <Col xs={10} sm={10} md={10} lg={6}>
-              <Button name="addTask" block onClick={addTask}>
+              <Button name="addTask" block onClick={handleAddTask}>
                 Adicionar Tarefa
               </Button>
             </Col>
@@ -72,27 +76,26 @@ function App() {
             dataSource={tasks}
             renderItem={(task) => (
               <List.Item
+                key={task.id}
                 actions={[
-                  <a
-                    key="list-loadmore-edit"
-                    onClick={() => toggleTaskDone(task.id)}
+                  <Button
+                    key={`finalize-task-${task.id}`}
+                    onClick={() => handleToggleTaskDone(task.id)}
+                    data-testid={`finalize-task-${task.id}`}
                   >
                     {task.done ? "Refazer tarefa" : "Finalizar Tarefa"}
-                  </a>,
-                  <a
-                    key="list-loadmore-more"
-                    onClick={() => deleteTask(task.id)}
+                  </Button>,
+                  <Button
+                    key={`delete-task-${task.id}`}
+                    onClick={() => handleDeleteTask(task.id)}
+                    data-testid={`delete-task-${task.id}`}
                   >
                     Deletar
-                  </a>,
+                  </Button>,
                 ]}
               >
                 <List.Item.Meta
-                  title={
-                    <a style={{ fontSize: "18px" }} href="#">
-                      {task.text}
-                    </a>
-                  }
+                  title={<span style={{ fontSize: "18px" }}>{task.text}</span>}
                   description={task.done ? "Finalizada" : "Tarefa em Andamento"}
                 />
               </List.Item>
