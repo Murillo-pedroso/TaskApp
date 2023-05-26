@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import { List, Input, Button, Col, Row, message } from "antd";
-
+import { AppContainer, StyledRow, TaskTitle } from "./style";
 interface Task {
   id: number;
   text: string;
@@ -47,7 +47,7 @@ function App() {
   };
 
   return (
-    <div style={{ padding: "2%" }}>
+    <AppContainer>
       <Row justify="center">
         <Col xs={22} sm={22} md={22} lg={14}>
           <Row gutter={[16, 16]}>
@@ -65,8 +65,8 @@ function App() {
               </Button>
             </Col>
           </Row>
-          <hr style={{ marginTop: "3%" }}></hr>
-          <h1 style={{ textAlign: "center" }}>Minhas tarefas</h1>
+          <StyledRow />
+          <TaskTitle>Minhas tarefas</TaskTitle>
           <List
             itemLayout="horizontal"
             dataSource={tasks}
@@ -100,7 +100,7 @@ function App() {
           />
         </Col>
       </Row>
-    </div>
+    </AppContainer>
   );
 }
 
