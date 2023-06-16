@@ -55,3 +55,23 @@ test("marca uma tarefa como não finalizada", () => {
   const notFinalizedTaskItem = screen.getByText("Tarefa em Andamento");
   expect(notFinalizedTaskItem).toBeInTheDocument();
 });
+
+test("limpa o campo de nova tarefa após adicionar", () => {
+  render(<App />);
+
+  // Preenche o campo de nova tarefa
+  const inputElement = screen.getByPlaceholderText(
+    "Nova Tarefa"
+  ) as HTMLInputElement;
+  fireEvent.change(inputElement, { target: { value: "Nova Tarefa" } });
+
+  // Verifica se o campo foi preenchido corretamente
+  expect(inputElement.value).toBe("Nova Tarefa");
+
+  // Adiciona a tarefa
+  const addTaskButton = screen.getByText("Adicionar Tarefa");
+  fireEvent.click(addTaskButton);
+
+  // Verifica se o campo de nova tarefa foi limpo
+  expect(inputElement.value).toBe("");
+});
