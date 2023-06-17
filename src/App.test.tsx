@@ -75,3 +75,31 @@ test("limpa o campo de nova tarefa após adicionar", () => {
   // Verifica se o campo de nova tarefa foi limpo
   expect(inputElement.value).toBe("");
 });
+
+test("adiciona várias tarefas", () => {
+  render(<App />);
+
+  // Adiciona três tarefas
+  const inputElement = screen.getByPlaceholderText(
+    "Nova Tarefa"
+  ) as HTMLInputElement;
+  const addTaskButton = screen.getByText("Adicionar Tarefa");
+
+  fireEvent.change(inputElement, { target: { value: "Tarefa 1" } });
+  fireEvent.click(addTaskButton);
+
+  fireEvent.change(inputElement, { target: { value: "Tarefa 2" } });
+  fireEvent.click(addTaskButton);
+
+  fireEvent.change(inputElement, { target: { value: "Tarefa 3" } });
+  fireEvent.click(addTaskButton);
+
+  // Verifica se as tarefas foram adicionadas à lista
+  const task1 = screen.getByText("Tarefa 1");
+  const task2 = screen.getByText("Tarefa 2");
+  const task3 = screen.getByText("Tarefa 3");
+
+  expect(task1).toBeInTheDocument();
+  expect(task2).toBeInTheDocument();
+  expect(task3).toBeInTheDocument();
+});
